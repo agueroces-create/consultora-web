@@ -136,6 +136,20 @@ const drawAr=()=>{const a=AR[md];
 document.querySelector('.mode').addEventListener('click',e=>{const b=e.target.closest('button');if(b){md=b.dataset.m;drawAr()}});
 drawAr();
 
+
+/* transiciones */
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const vt=fn=>{if(rm||!document.startViewTransition){fn();return}document.startViewTransition(fn)};
+document.querySelectorAll('[data-portal]').forEach(l=>l.addEventListener('click',e=>{
+ e.preventDefault();const a=$('#heroPanel'),b=$('#login');
+ const fin=()=>b.scrollIntoView({block:'center',behavior:'instant'});
+ const r=a.getBoundingClientRect();
+ if(rm||!document.startViewTransition||r.bottom<0||r.top>innerHeight){b.scrollIntoView({block:'center'});return}
+ a.style.viewTransitionName='portal';
+ const t=document.startViewTransition(()=>{a.style.viewTransitionName='';b.style.viewTransitionName='portal';fin()});
+ t.finished.finally(()=>{b.style.viewTransitionName=''});
+}));
+
 /* comparador */
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 18px}
 .tabs button{min-height:44px;padding:0 16px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:600 15px Inter,sans-serif;cursor:pointer}
@@ -195,13 +209,26 @@ footer .note{color:#a6aeba}
 @media(max-width:600px){.nav nav{width:100%;margin:0;overflow-x:auto;flex-wrap:nowrap}.nav nav a{flex:none}.row2{grid-template-columns:minmax(0,1fr)}.socio{grid-template-columns:minmax(0,1fr) 44px}.socio label:nth-child(2),.socio label:nth-child(3){grid-column:1}.ficha dl{grid-template-columns:minmax(0,1fr)}.ficha dt{margin-top:6px}}
 @media(max-width:860px){.pgrid,.name{grid-template-columns:minmax(0,1fr)}.pcol+.pcol{border-left:0;border-top:1px solid var(--line)}}
 @media(max-width:600px){.pbar em{display:none}.nav nav a.pbtn{margin-left:0}.tl small{display:none}}
+
+/* efectos: fundido, elemento compartido y desenfoque */
+#ficha{view-transition-name:ficha}#wf{view-transition-name:wiz}
+::view-transition-old(ficha),::view-transition-new(ficha),::view-transition-old(wiz),::view-transition-new(wiz){animation-duration:.28s}
+::view-transition-group(portal){animation-duration:.5s;animation-timing-function:cubic-bezier(.2,.7,.2,1)}
+.wizbox{position:relative}
+.wizbox.locked{opacity:1;pointer-events:auto;filter:none}
+.wizbox.locked>:not(.veil){filter:blur(5px);pointer-events:none;user-select:none}
+.veil{display:none}
+.wizbox.locked .veil{display:grid;position:absolute;inset:0;z-index:2;place-items:center;text-align:center;padding:24px;border-radius:22px;background:color-mix(in srgb,var(--card) 35%,transparent)}
+.veil div{max-width:30ch;font-weight:600}
+.sample a{color:var(--red);font-weight:600}
+@media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
 </style>
 </head>
 <body>
 <header><div class="nav">
   <a class="logo" href="#inicio"><i></i>Consultora societaria</a>
   <nav aria-label="Secciones">
-    <a href="#servicios">Servicios</a><a href="#figuras">Figuras</a><a href="#cotizador">Cotizador</a><a href="#aranceles">Aranceles</a><a href="#jurisdicciones">Jurisdicciones</a><a href="#rotary">Rotary</a><a href="#faq">Preguntas</a><a class="pbtn" href="#portal">Portal de clientes</a>
+    <a href="#servicios">Servicios</a><a href="#figuras">Figuras</a><a href="#cotizador">Cotizador</a><a href="#aranceles">Aranceles</a><a href="#jurisdicciones">Jurisdicciones</a><a href="#rotary">Rotary</a><a href="#faq">Preguntas</a><a class="pbtn" href="#portal" data-portal>Portal de clientes</a>
   </nav>
 </div></header>
 
@@ -210,7 +237,7 @@ footer .note{color:#a6aeba}
   <p class="lead">Constitución de SA, SRL, SAS, asociaciones civiles y fundaciones en CABA, Provincia de Buenos Aires y otras jurisdicciones. Estatuto, inscripción, CUIT y libros, con seguimiento online desde tu portal.</p>
   <div class="cta"><a class="btn" href="#cotizador">Cotizá tu constitución</a><a class="btn ghost" href="#contacto">Agendá una reunión</a></div>
   <div class="trust"><span>Contador público matriculado</span><span>Trámites ante IGJ y DPPJ</span><span>Programa especial para clubes rotarios</span></div>
-  <div class="panel" role="img" aria-label="Ejemplo del portal: avance de la constitución de Los Aromos SRL">
+  <div class="panel" id="heroPanel" role="img" aria-label="Ejemplo del portal: avance de la constitución de Los Aromos SRL">
     <div class="pbar"><b></b><b></b><b></b><span>Portal de clientes · Mis trámites</span><em>Actualizado hoy</em></div>
     <div class="pgrid">
       <div class="pcol">
@@ -236,7 +263,7 @@ footer .note{color:#a6aeba}
       </div>
     </div>
   </div>
-  <p class="sample">Ejemplo ilustrativo del portal</p>
+  <p class="sample">Ejemplo ilustrativo del portal · <a href="#portal" data-portal>Probar la demostración</a></p>
 </div></section>
 
 <section class="band" id="como"><div class="wrap">
@@ -381,6 +408,7 @@ footer .note{color:#a6aeba}
     </div>
   </div>
   <div class="wizbox locked" id="wiz">
+    <div class="veil"><div>Ingresá con tu usuario o tocá "Ver demostración del asistente" para probarlo.</div></div>
     <div class="steps" id="steps"></div>
     <form class="wiz" id="wf" onsubmit="return false"></form>
     <div class="nav2"><button class="btn ghost" type="button" id="prev">Anterior</button><button class="btn" type="button" id="next">Siguiente</button></div>
@@ -455,6 +483,20 @@ const drawAr=()=>{const a=AR[md];
 document.querySelector('.mode').addEventListener('click',e=>{const b=e.target.closest('button');if(b){md=b.dataset.m;drawAr()}});
 drawAr();
 
+
+/* transiciones */
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const vt=fn=>{if(rm||!document.startViewTransition){fn();return}document.startViewTransition(fn)};
+document.querySelectorAll('[data-portal]').forEach(l=>l.addEventListener('click',e=>{
+ e.preventDefault();const a=$('#heroPanel'),b=$('#login');
+ const fin=()=>b.scrollIntoView({block:'center',behavior:'instant'});
+ const r=a.getBoundingClientRect();
+ if(rm||!document.startViewTransition||r.bottom<0||r.top>innerHeight){b.scrollIntoView({block:'center'});return}
+ a.style.viewTransitionName='portal';
+ const t=document.startViewTransition(()=>{a.style.viewTransitionName='';b.style.viewTransitionName='portal';fin()});
+ t.finished.finally(()=>{b.style.viewTransitionName=''});
+}));
+
 /* comparador */
 let cur='sa';
 const drawFicha=()=>{
@@ -463,7 +505,7 @@ const drawFicha=()=>{
  $('#ficha').innerHTML=`<dl>${f.f.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl>
  <div class="side"><span class="card tag ${f.c==='s'?'t-s':'t-c'}" style="padding:3px 10px;border:0">${f.c==='s'?'Sociedad':'Entidad civil'}</span><h3>${f.n}</h3><p class="note just">${f.d}</p><b>Libros obligatorios</b><ul>${f.l.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
 };
-$('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){cur=b.dataset.k;drawFicha()}});
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b&&b.dataset.k!==cur){cur=b.dataset.k;vt(drawFicha)}});
 drawFicha();
 
 /* cotizador: valores de ejemplo */
@@ -531,9 +573,9 @@ $('#wf').addEventListener('click',e=>{
  const d=e.target.dataset.del;if(d!==undefined&&S.socios.length>1){S.socios.splice(+d,1);drawWiz()}
  if(e.target.id==='cp'){navigator.clipboard.writeText(resumen()).then(()=>$('#cpm').textContent='Copiado.',()=>$('#cpm').textContent='Seleccioná el texto y copialo a mano.')}
 });
-$('#next').addEventListener('click',()=>{step=step===STEPS.length-1?0:step+1;drawWiz()});
-$('#prev').addEventListener('click',()=>{if(step){step--;drawWiz()}});
-$('#demo').addEventListener('click',()=>{$('#wiz').classList.remove('locked');$('#wiz').scrollIntoView({block:'nearest'});$('#wf').querySelector('select')?.focus()});
+$('#next').addEventListener('click',()=>vt(()=>{step=step===STEPS.length-1?0:step+1;drawWiz()}));
+$('#prev').addEventListener('click',()=>{if(step)vt(()=>{step--;drawWiz()})});
+$('#demo').addEventListener('click',()=>{vt(()=>$('#wiz').classList.remove('locked'));$('#wiz').scrollIntoView({block:'nearest'});$('#wf').querySelector('select')?.focus()});
 drawWiz();
 }
 </script>
