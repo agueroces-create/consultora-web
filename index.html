@@ -150,6 +150,12 @@ document.querySelectorAll('[data-portal]').forEach(l=>l.addEventListener('click'
  t.finished.finally(()=>{b.style.viewTransitionName=''});
 }));
 
+
+/* guías por jurisdicción */
+$('#gtabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ document.querySelectorAll('#gtabs button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+ document.querySelectorAll('.gpanel').forEach(x=>x.hidden=x.dataset.p!==b.dataset.g)});
+
 /* comparador */
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 18px}
 .tabs button{min-height:44px;padding:0 16px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:600 15px Inter,sans-serif;cursor:pointer}
@@ -210,6 +216,9 @@ footer .note{color:#a6aeba}
 @media(max-width:860px){.pgrid,.name{grid-template-columns:minmax(0,1fr)}.pcol+.pcol{border-left:0;border-top:1px solid var(--line)}}
 @media(max-width:600px){.pbar em{display:none}.nav nav a.pbtn{margin-left:0}.tl small{display:none}}
 
+.gh{font-size:clamp(24px,2.6vw,30px);margin-bottom:.4em}
+.gpanel>.wrap{margin-top:28px}.gpanel .band{padding:0}
+.steps2{margin:10px 0 14px;padding-left:22px;display:grid;gap:8px;max-width:80ch}
 /* efectos: fundido, elemento compartido y desenfoque */
 #ficha{view-transition-name:ficha}#wf{view-transition-name:wiz}
 ::view-transition-old(ficha),::view-transition-new(ficha),::view-transition-old(wiz),::view-transition-new(wiz){animation-duration:.28s}
@@ -228,7 +237,7 @@ footer .note{color:#a6aeba}
 <header><div class="nav">
   <a class="logo" href="#inicio"><i></i>Consultora societaria</a>
   <nav aria-label="Secciones">
-    <a href="#servicios">Servicios</a><a href="#figuras">Figuras</a><a href="#cotizador">Cotizador</a><a href="#aranceles">Aranceles</a><a href="#jurisdicciones">Jurisdicciones</a><a href="#rotary">Rotary</a><a href="#faq">Preguntas</a><a class="pbtn" href="#portal" data-portal>Portal de clientes</a>
+    <a href="#servicios">Servicios</a><a href="#figuras">Figuras</a><a href="#cotizador">Cotizador</a><a href="#rotary">Rotary</a><a href="#faq">Preguntas</a><a href="#guias">Guías</a><a class="pbtn" href="#portal" data-portal>Portal de clientes</a>
   </nav>
 </div></header>
 
@@ -266,6 +275,12 @@ footer .note{color:#a6aeba}
   <p class="sample">Ejemplo ilustrativo del portal · <a href="#portal" data-portal>Probar la demostración</a></p>
 </div></section>
 
+<section class="band soft" id="servicios"><div class="wrap">
+  <h2>Qué hacemos</h2>
+  <p class="lead just">Nuestra especialidad es la creación de entidades. Trabajamos con los casos más frecuentes y con los requisitos particulares de cada jurisdicción, y seguimos acompañando a la entidad una vez inscripta.</p>
+  <div class="grid" id="svc"></div>
+</div></section>
+
 <section class="band" id="como"><div class="wrap">
   <h2>Cómo trabajamos</h2>
   <p class="lead just">Un solo interlocutor para todo el trámite. Vos nos contás el proyecto; nosotros elegimos la figura, redactamos y presentamos.</p>
@@ -276,67 +291,23 @@ footer .note{color:#a6aeba}
   </div>
 </div></section>
 
-<section class="band soft" id="nombre"><div class="wrap name">
-  <div>
-    <h2>El primer paso: el nombre</h2>
-    <p class="just">Antes de reservar, hacemos la consulta previa de homonimia ante la IGJ. La consulta no reserva el nombre ni garantiza que pueda usarse, pero reduce mucho el riesgo de rechazo. Después presentamos la reserva por Trámites a Distancia (TAD) con tres alternativas en orden de preferencia; se abona online y la IGJ envía la constancia. La reserva es opcional, pero la recomendamos.</p>
-    <p class="just">La reserva vale 30 días corridos. No se tramita para la SAS: en ese caso la denominación se controla dentro del propio trámite de constitución.</p>
-    <div class="links">
-      <a href="https://www2.jus.gov.ar/igj-homonimia/Principal.aspx">Consulta previa de homonimia IGJ</a>
-      <a href="https://www.argentina.gob.ar/servicio/reservar-nombre-para-una-sociedad-comercial-o-entidad-civil">Reserva de denominación por TAD</a>
-    </div>
-  </div>
-  <div class="fees">
-    <table><thead><tr><th>Reserva en IGJ (CABA)</th><th>Módulos</th><th>Pesos</th></tr></thead><tbody id="feeRows"></tbody></table>
-    <p class="note" style="padding:0 16px 14px;margin:0">Calculado con el módulo IGJ de $ 1.500 (Res. MJ 33/2024). Se actualiza cuando cambie el valor del módulo.</p>
-  </div>
-</div></section>
-
-<section class="band" id="aranceles"><div class="wrap">
-  <h2>Trámite común o urgente en la IGJ</h2>
-  <p class="lead just">La constitución de SA, SAU y SRL puede presentarse en modalidad común o urgente. La urgente cuesta cuatro veces más en tasas, pero se inscribe en 5 días hábiles desde la presentación si no hay observaciones; requiere turno previo y el formulario 185 de ARCA. Se puede sumar la rúbrica de los libros en el mismo trámite.</p>
-  <div class="mode" role="group" aria-label="Modalidad"><button type="button" data-m="c" aria-pressed="true">Común</button><button type="button" data-m="u" aria-pressed="false">Urgente</button></div>
-  <div class="fees scroll"><table><thead id="arH"></thead><tbody id="arB"></tbody></table></div>
-  <p class="note" style="margin-top:10px">Tasas de la IGJ en módulos, a $ 1.500 cada uno. La reserva de denominación solo figura como trámite común. Fuente: guías de trámites de la IGJ en argentina.gob.ar, que advierten estar en actualización.</p>
-</div></section>
-
-<section class="band soft" id="sas"><div class="wrap">
-  <h2>Cómo se crea una SAS en la IGJ</h2>
-  <p class="lead just">La SAS tiene un circuito completamente digital en TAD. El trámite se inicia con clave fiscal, por eso esa parte la hacemos con el cliente en persona o por videollamada, nunca a través del portal.</p>
-  <div class="sasg" id="sasSteps"></div>
-  <p class="note" style="margin-top:14px">Una vez confirmada la carga inicial, el sistema no permite volver atrás: por eso revisamos todas las opciones con el cliente antes de empezar. <a href="https://www.argentina.gob.ar/justicia/igj/paso-paso-para-crear-tu-sas">Guía oficial de la IGJ</a></p>
-</div></section>
-
-<section class="band" id="jurisdicciones"><div class="wrap">
-  <h2>Trabajamos en cada jurisdicción</h2>
-  <p class="lead just">Cada registro tiene su normativa, sus formularios y sus aranceles. Trabajamos con los sistemas de cada organismo.</p>
-  <div class="grid">
-    <div class="card"><span class="tag t-s">CABA</span><h3>Inspección General de Justicia</h3><div class="links">
-      <a href="https://www.argentina.gob.ar/justicia/igj">Sitio de la IGJ</a>
-      <a href="https://www.argentina.gob.ar/tad">Trámites a Distancia (TAD)</a>
-      <a href="https://www.argentina.gob.ar/servicio/emitir-boletas-de-tasas-inspeccion-general-de-justicia">Boletas de tasas IGJ</a>
-      <a href="https://www.argentina.gob.ar/justicia/igj/entidades-civiles">Asociaciones civiles y fundaciones</a></div></div>
-    <div class="card"><span class="tag t-c">Provincia de Buenos Aires</span><h3>Dirección Provincial de Personas Jurídicas</h3><div class="links">
-      <a href="http://tramix.persjuri.gba.gov.ar:8080/TRAMIX/">Tramix On Line (DPPJ)</a></div>
-      <p class="note" style="margin-top:12px">Requisitos y tasas de la DPPJ: en preparación con el material del estudio.</p></div>
-    <div class="card"><span class="tag t-k">Otras provincias</span><h3>Registros provinciales</h3><p class="note">Constituimos en otras jurisdicciones coordinando con el registro público de cada provincia. Consultanos por la tuya.</p></div>
-  </div>
-  <div class="stats" id="stats"></div>
-  <p class="note">Sociedades y entidades registradas en las 24 jurisdicciones, según <a href="https://indicadores.ar/empresas">indicadores.ar</a> (sin fecha de corte informada).</p>
-</div></section>
-
-<section class="band soft" id="servicios"><div class="wrap">
-  <h2>Qué hacemos</h2>
-  <p class="lead just">Nuestra especialidad es la creación de entidades. Trabajamos con los casos más frecuentes y con los requisitos particulares de cada jurisdicción, y seguimos acompañando a la entidad una vez inscripta.</p>
-  <div class="grid" id="svc"></div>
-</div></section>
-
-<section class="band" id="figuras"><div class="wrap">
+<section class="band soft" id="figuras"><div class="wrap">
   <h2>Compará las figuras antes de decidir</h2>
   <p class="lead">Elegí una figura para ver sus rasgos principales, quién interviene y qué libros necesita.</p>
   <div class="tabs" id="tabs" role="group" aria-label="Figuras"></div>
   <div class="ficha" id="ficha"></div>
   <p class="note" style="margin-top:14px">Contenido orientativo según la Ley General de Sociedades 19.550, la Ley 27.349 (SAS), el Código Civil y Comercial y la Ley 19.836 (fundaciones). Los requisitos de cada organismo se completan con la normativa de la jurisdicción.</p>
+</div></section>
+
+<section class="band" id="profesionales"><div class="wrap">
+  <h2>Quién interviene en cada paso</h2>
+  <p class="lead just">Según la figura y la jurisdicción, la constitución puede hacerse por instrumento público (escritura) o por instrumento privado con firmas certificadas. Coordinamos a todos los profesionales para que el cliente tenga un solo interlocutor.</p>
+  <div class="pros">
+    <div class="card"><h3><span class="dot" style="border-color:var(--red)"></span>Contador público</h3><p class="note">Dictamen o certificación sobre capital y patrimonio, inscripción en ARCA e ingresos brutos, rúbrica y teneduría de libros, balances.</p></div>
+    <div class="card"><h3><span class="dot" style="border-color:var(--blue)"></span>Escribano</h3><p class="note">Escritura pública de constitución cuando corresponde, certificación de firmas e instrumentos, poderes.</p></div>
+    <div class="card"><h3><span class="dot" style="border-color:var(--amber)"></span>Abogado</h3><p class="note">Redacción del estatuto y del objeto, respuesta a observaciones del organismo, casos especiales y conflictos societarios.</p></div>
+    <div class="card"><h3><span class="dot"></span>Instrumento público o privado</h3><p class="note">La SA se constituye por escritura pública; la SRL, la SAS, la asociación civil y la fundación admiten instrumento privado con firmas certificadas.</p></div>
+  </div>
 </div></section>
 
 <section class="band soft" id="cotizador"><div class="wrap">
@@ -380,21 +351,77 @@ footer .note{color:#a6aeba}
   </div>
 </div></section>
 
-<section class="band soft" id="profesionales"><div class="wrap">
-  <h2>Quién interviene en cada paso</h2>
-  <p class="lead just">Según la figura y la jurisdicción, la constitución puede hacerse por instrumento público (escritura) o por instrumento privado con firmas certificadas. Coordinamos a todos los profesionales para que el cliente tenga un solo interlocutor.</p>
-  <div class="pros">
-    <div class="card"><h3><span class="dot" style="border-color:var(--red)"></span>Contador público</h3><p class="note">Dictamen o certificación sobre capital y patrimonio, inscripción en ARCA e ingresos brutos, rúbrica y teneduría de libros, balances.</p></div>
-    <div class="card"><h3><span class="dot" style="border-color:var(--blue)"></span>Escribano</h3><p class="note">Escritura pública de constitución cuando corresponde, certificación de firmas e instrumentos, poderes.</p></div>
-    <div class="card"><h3><span class="dot" style="border-color:var(--amber)"></span>Abogado</h3><p class="note">Redacción del estatuto y del objeto, respuesta a observaciones del organismo, casos especiales y conflictos societarios.</p></div>
-    <div class="card"><h3><span class="dot"></span>Instrumento público o privado</h3><p class="note">La SA se constituye por escritura pública; la SRL, la SAS, la asociación civil y la fundación admiten instrumento privado con firmas certificadas.</p></div>
-  </div>
-</div></section>
-
-<section class="band" id="faq"><div class="wrap">
+<section class="band soft" id="faq"><div class="wrap">
   <h2>Preguntas frecuentes</h2>
   <div id="faqs" style="margin-top:20px"></div>
 </div></section>
+
+<section class="band" id="guias"><div class="wrap">
+  <h2>Guías de trámites</h2>
+  <p class="lead just">Lo que hay que saber antes de constituir o regularizar una entidad, según la jurisdicción. Información orientativa: la normativa y los aranceles cambian, y revisamos cada caso antes de presentar.</p>
+  <div class="tabs" id="gtabs" role="tablist" aria-label="Jurisdicción">
+    <button type="button" role="tab" data-g="caba" aria-pressed="true">CABA · IGJ</button>
+    <button type="button" role="tab" data-g="pba" aria-pressed="false">Provincia de Buenos Aires · DPPJ</button>
+    <button type="button" role="tab" data-g="otras" aria-pressed="false">Otras provincias</button>
+  </div>
+</div>
+<div class="gpanel" data-p="caba"><div class="wrap name">
+  <div>
+    <h3 class="gh">El primer paso: el nombre</h3>
+    <p class="just">Antes de reservar, hacemos la consulta previa de homonimia ante la IGJ. La consulta no reserva el nombre ni garantiza que pueda usarse, pero reduce mucho el riesgo de rechazo. Después presentamos la reserva por Trámites a Distancia (TAD) con tres alternativas en orden de preferencia; se abona online y la IGJ envía la constancia. La reserva es opcional, pero la recomendamos.</p>
+    <p class="just">La reserva vale 30 días corridos. No se tramita para la SAS: en ese caso la denominación se controla dentro del propio trámite de constitución.</p>
+    <div class="links">
+      <a href="https://www2.jus.gov.ar/igj-homonimia/Principal.aspx">Consulta previa de homonimia IGJ</a>
+      <a href="https://www.argentina.gob.ar/servicio/reservar-nombre-para-una-sociedad-comercial-o-entidad-civil">Reserva de denominación por TAD</a>
+    </div>
+  </div>
+  <div class="fees">
+    <table><thead><tr><th>Reserva en IGJ (CABA)</th><th>Módulos</th><th>Pesos</th></tr></thead><tbody id="feeRows"></tbody></table>
+    <p class="note" style="padding:0 16px 14px;margin:0">Calculado con el módulo IGJ de $ 1.500 (Res. MJ 33/2024). Se actualiza cuando cambie el valor del módulo.</p>
+  </div>
+</div><div class="wrap">
+  <h3 class="gh">Trámite común o urgente en la IGJ</h3>
+  <p class="lead just">La constitución de SA, SAU y SRL puede presentarse en modalidad común o urgente. La urgente cuesta cuatro veces más en tasas, pero se inscribe en 5 días hábiles desde la presentación si no hay observaciones; requiere turno previo y el formulario 185 de ARCA. Se puede sumar la rúbrica de los libros en el mismo trámite.</p>
+  <div class="mode" role="group" aria-label="Modalidad"><button type="button" data-m="c" aria-pressed="true">Común</button><button type="button" data-m="u" aria-pressed="false">Urgente</button></div>
+  <div class="fees scroll"><table><thead id="arH"></thead><tbody id="arB"></tbody></table></div>
+  <p class="note" style="margin-top:10px">Tasas de la IGJ en módulos, a $ 1.500 cada uno. La reserva de denominación solo figura como trámite común. Fuente: guías de trámites de la IGJ en argentina.gob.ar, que advierten estar en actualización.</p>
+</div><div class="wrap">
+  <h3 class="gh">Cómo se crea una SAS en la IGJ</h3>
+  <p class="lead just">La SAS tiene un circuito completamente digital en TAD. El trámite se inicia con clave fiscal, por eso esa parte la hacemos con el cliente en persona o por videollamada, nunca a través del portal.</p>
+  <div class="sasg" id="sasSteps"></div>
+  <p class="note" style="margin-top:14px">Una vez confirmada la carga inicial, el sistema no permite volver atrás: por eso revisamos todas las opciones con el cliente antes de empezar. <a href="https://www.argentina.gob.ar/justicia/igj/paso-paso-para-crear-tu-sas">Guía oficial de la IGJ</a></p>
+</div><div class="wrap" style="margin-top:36px"><h3 class="gh">Enlaces de la IGJ</h3><div class="links">
+      <a href="https://www.argentina.gob.ar/justicia/igj">Sitio de la IGJ</a>
+      <a href="https://www.argentina.gob.ar/tad">Trámites a Distancia (TAD)</a>
+      <a href="https://www.argentina.gob.ar/servicio/emitir-boletas-de-tasas-inspeccion-general-de-justicia">Boletas de tasas IGJ</a>
+      <a href="https://www.argentina.gob.ar/justicia/igj/entidades-civiles">Asociaciones civiles y fundaciones</a></div></div></div>
+<div class="gpanel" data-p="pba" hidden><div class="wrap">
+  <h3 class="gh">Regularización de asociaciones civiles en Provincia</h3>
+  <p class="lead just">Muchas asociaciones civiles, entre ellas varios clubes rotarios, funcionan con autoridades vencidas o con balances sin presentar ante la Dirección Provincial de Personas Jurídicas (DPPJ). Hay dos caminos para ponerlas al día, y cuál corresponde depende de los ingresos y del tipo de entidad.</p>
+  <div class="grid">
+    <div class="card"><span class="tag t-c">Ley 15.192</span><h3>Condonación y normalización</h3><p class="note just">Alcanza a las asociaciones civiles de primer grado con ingresos anuales de hasta la categoría G del monotributo, o constituidas como clubes de barrio, centros de jubilados, centros culturales y entidades similares. Condona la documentación anual adeudada de más de cinco ejercicios. La solicitud la firman al menos tres socios.</p></div>
+    <div class="card"><span class="tag t-s">Disposición DPPJ 52/2016</span><h3>Normalización</h3><p class="note just">Es la vía para las entidades que no entran en la Ley 15.192. La inicia un socio con el Anexo I y firma certificada, junto con el estatuto y el acta constitutiva sellados, o la denuncia de extravío y el pedido de desarchivo. El procedimiento dura seis meses, prorrogables una vez.</p></div>
+  </div>
+  <h3 class="gh" style="margin-top:36px">Cómo sigue la normalización</h3>
+  <ol class="steps2">
+    <li>La DPPJ autoriza a convocar una asamblea, que se publica en un diario y en carteleras.</li>
+    <li>La asamblea elige una comisión normalizadora de tres titulares y uno a tres suplentes.</li>
+    <li>Se reempadronan los socios durante al menos un mes.</li>
+    <li>Se rubrican los libros obligatorios y se presentan los estados contables adeudados o los últimos cinco ejercicios.</li>
+    <li>Una asamblea electoral, con veedor de la DPPJ, elige las nuevas autoridades.</li>
+    <li>La nueva comisión directiva presenta la documentación y la DPPJ dicta la resolución final.</li>
+  </ol>
+  <p class="note">La Disposición DPPJ 68/2024 extendió estos procesos a asociaciones civiles de cualquier grado y categoría. Revisamos cada caso con la normativa vigente antes de presentar.</p>
+  <h3 class="gh" style="margin-top:36px">Enlaces de la DPPJ</h3>
+  <div class="links">
+    <a href="https://www.gba.gob.ar/dppj">Dirección Provincial de Personas Jurídicas</a>
+    <a href="https://www.gba.gob.ar/dppj/legislacion">Legislación de la DPPJ</a>
+    <a href="http://tramix.persjuri.gba.gov.ar:8080/TRAMIX/">Tramix On Line</a>
+  </div>
+</div></div>
+<div class="gpanel" data-p="otras" hidden><div class="wrap"><h3 class="gh">Otras provincias</h3><p class="lead just">Constituimos y regularizamos entidades en otras jurisdicciones coordinando con el registro público de cada provincia. Cada registro tiene su normativa, sus formularios y sus aranceles: consultanos por la tuya.</p><div class="stats" id="stats"></div>
+  <p class="note">Sociedades y entidades registradas en las 24 jurisdicciones, según <a href="https://indicadores.ar/empresas">indicadores.ar</a> (sin fecha de corte informada).</p></div></div>
+</section>
 
 <section class="band soft" id="portal"><div class="wrap portal">
   <div>
@@ -496,6 +523,12 @@ document.querySelectorAll('[data-portal]').forEach(l=>l.addEventListener('click'
  const t=document.startViewTransition(()=>{a.style.viewTransitionName='';b.style.viewTransitionName='portal';fin()});
  t.finished.finally(()=>{b.style.viewTransitionName=''});
 }));
+
+
+/* guías por jurisdicción */
+$('#gtabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ document.querySelectorAll('#gtabs button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+ document.querySelectorAll('.gpanel').forEach(x=>x.hidden=x.dataset.p!==b.dataset.g)});
 
 /* comparador */
 let cur='sa';
